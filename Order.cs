@@ -1,22 +1,10 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-
-namespace ConsoleApp2
+﻿namespace ConsoleApp2
 {
     internal class Order
     {
         // объявление переменных
-        static int numberOfTiers, productWeight, numberOfTiersPrice, shapePrice, cakeDecorationPrice, additionalInscriptionPrice, additionalDecorationsPrice;
-        static string filling, shape, cakeDecoration, additionalInscription;
-        static bool[] additionalDecorations = new bool[4];
-        public static int price;
-        public static string yourCake;
+        public static int price = 0;
+        public static string yourCake = "";
 
         public static void OrderMenu(int position)
         {
@@ -25,140 +13,64 @@ namespace ConsoleApp2
             Console.SetCursorPosition(0, 3);
 
             OrderSubmenu(position);
-
-            // цена яруса и вес в зависимости от него
-            if (numberOfTiers != 0)
-            {
-                numberOfTiersPrice = 1000;
-
-                if (numberOfTiers == 1)
-                {
-                    if (productWeight == 0)
-                    {
-                        productWeight = 1;
-                    }
-                }
-
-                else if (numberOfTiers == 2)
-                {
-                    if (productWeight == 0)
-                    {
-                        productWeight = 3;
-                    }
-
-                    if (productWeight < 3)
-                    {
-                        productWeight = 3;
-                    }
-                }
-
-                else if (numberOfTiers == 3)
-                {
-                    if (productWeight == 0)
-                    {
-                        productWeight = 4;
-                    }
-
-                    if (productWeight < 4)
-                    {
-                        productWeight = 4;
-                    }
-                }
-
-                else if (numberOfTiers == 4)
-                {
-                    if (productWeight == 0)
-                    {
-                        productWeight = 6;
-                    }
-
-                    if (productWeight < 6)
-                    {
-                        productWeight = 6;
-                    }
-                }
-            }
-
-            // цена формы, оформления и надписи, если не пусты
-            if (!string.IsNullOrEmpty(shape))
-            {
-                shapePrice = 100 * productWeight;
-            }
-
-            if (!string.IsNullOrEmpty(cakeDecoration))
-            {
-                cakeDecorationPrice = 500;
-            }
-
-            if (!string.IsNullOrEmpty(additionalInscription))
-            {
-                additionalInscriptionPrice = 150;
-            }
-
-            for (int i = 0; i < additionalDecorations.LongLength; i++)
-            {
-                if (additionalDecorations[i] == true)
-                {
-                    additionalDecorationsPrice += 1;
-                }
-            }
+            Submenu.Calculations();
 
             // формула цены, если выбраны ярусы (п.с. маркетинг)
-            if (numberOfTiers != 0)
+            if (Submenu.numberOfTiers.intValue != 0)
             {
-                price = numberOfTiersPrice + shapePrice + productWeight * 1300 + cakeDecorationPrice + additionalInscriptionPrice + 200 * additionalDecorationsPrice;
+                price = Submenu.numberOfTiers.price + Submenu.shape.price + Submenu.productWeight.intValue * Submenu.productWeight.price + Submenu.cakeDecoration.price + Submenu.additionalInscription.price + Submenu.additionalDecorations.price;
             }
 
             // сборка строчки заказа
-            if (numberOfTiers != 0)
+            if (Submenu.numberOfTiers.intValue != 0)
             {
-                yourCake = $"кол-во ярусов: {numberOfTiers};";
+                yourCake = $"кол-во ярусов: {Submenu.numberOfTiers.intValue};";
 
-                if (filling != null)
+                if (!string.IsNullOrEmpty(Submenu.filling.stringValue))
                 {
-                    yourCake += $" начинка: {filling};";
+                    yourCake += $" начинка: {Submenu.filling.stringValue};";
                 }
 
-                if (!string.IsNullOrEmpty(shape))
+                if (!string.IsNullOrEmpty(Submenu.shape.stringValue))
                 {
-                    yourCake += $" форма: {shape};";
+                    yourCake += $" форма: {Submenu.shape.stringValue};";
                 }
 
-                if (productWeight != 0)
+                if (Submenu.productWeight.intValue != 0)
                 {
-                    yourCake += $" вес: {productWeight} кг;";
+                    yourCake += $" вес: {Submenu.productWeight.intValue} кг;";
                 }
 
-                if (cakeDecoration != null)
+                if (!string.IsNullOrEmpty(Submenu.cakeDecoration.stringValue))
                 {
-                    yourCake += $" оформление: {cakeDecoration};";
+                    yourCake += $" оформление: {Submenu.cakeDecoration.stringValue};";
                 }
 
-                if (!string.IsNullOrEmpty(additionalInscription))
+                if (!string.IsNullOrEmpty(Submenu.additionalInscription.stringValue))
                 {
-                    yourCake += $" надпись: \"{additionalInscription}\";";
+                    yourCake += $" надпись: \"{Submenu.additionalInscription.stringValue}\";";
                 }
 
-                if (additionalDecorations[0] == true || additionalDecorations[1] == true || additionalDecorations[2] == true || additionalDecorations[3] == true)
+                if (Submenu.additionalDecorations.boolValue[0] == true || Submenu.additionalDecorations.boolValue[1] == true || Submenu.additionalDecorations.boolValue[2] == true || Submenu.additionalDecorations.boolValue[3] == true)
                 {
                     yourCake += " доп. оформление:";
 
-                    if (additionalDecorations[0] == true)
+                    if (Submenu.additionalDecorations.boolValue[0] == true)
                     {
                         yourCake += " шоколадная табличка;";
                     }
 
-                    if (additionalDecorations[1] == true)
+                    if (Submenu.additionalDecorations.boolValue[1] == true)
                     {
                         yourCake += " набор фейерверков;";
                     }
 
-                    if (additionalDecorations[2] == true)
+                    if (Submenu.additionalDecorations.boolValue[2] == true)
                     {
                         yourCake += " cвечи;";
                     }
 
-                    if (additionalDecorations[3] == true)
+                    if (Submenu.additionalDecorations.boolValue[3] == true)
                     {
                         yourCake += " фигурки;";
                     }
@@ -175,7 +87,7 @@ namespace ConsoleApp2
             {
                 position = 3;
 
-                Console.WriteLine("->Один\n  Два\n  Три\n  Четыре");
+                Console.WriteLine(Submenu.numberOfTiers.submenuInput);
 
                 do
                 {
@@ -188,7 +100,7 @@ namespace ConsoleApp2
 
                     else if (key.Key == ConsoleKey.Enter)
                     {
-                        numberOfTiers = position - 2;
+                        Submenu.numberOfTiers.intValue = position - 2;
                         Console.Clear();
                         Program.menuCheck = 0;
                         break;
@@ -208,7 +120,7 @@ namespace ConsoleApp2
             {
                 position = 3;
 
-                Console.WriteLine("->Трюфельная\n  Морковная с карамелью\n  Фирменная\n  Красный бархат\n  Шоколадная с ягодами");
+                Console.WriteLine(Submenu.filling.submenuInput);
 
                 do
                 {
@@ -223,27 +135,27 @@ namespace ConsoleApp2
                     {
                         if (position == 3)
                         {
-                            filling = "Трюфельная";
+                            Submenu.filling.stringValue = "Трюфельная";
                         }
 
                         else if (position == 4)
                         {
-                            filling = "Морковная с карамелью";
+                            Submenu.filling.stringValue = "Морковная с карамелью";
                         }
 
                         else if (position == 5)
                         {
-                            filling = "Фирменная";
+                            Submenu.filling.stringValue = "Фирменная";
                         }
 
                         else if (position == 6)
                         {
-                            filling = "Красный бархат";
+                            Submenu.filling.stringValue = "Красный бархат";
                         }
 
                         else if (position == 7)
                         {
-                            filling = "Шоколадная с ягодами";
+                            Submenu.filling.stringValue = "Шоколадная с ягодами";
                         }
 
                         Console.Clear();
@@ -265,7 +177,7 @@ namespace ConsoleApp2
             {
                 position = 3;
 
-                Console.WriteLine("->Квадратная\n  Круглая\n  Треугольная\n  Другая");
+                Console.WriteLine(Submenu.shape.submenuInput);
 
                 do
                 {
@@ -280,23 +192,23 @@ namespace ConsoleApp2
                     {
                         if (position == 3)
                         {
-                            shape = "Квадратная";
+                            Submenu.shape.stringValue = "Квадратная";
                         }
 
                         else if (position == 4)
                         {
-                            shape = "Круглая";
+                            Submenu.shape.stringValue = "Круглая";
                         }
 
                         else if (position == 5)
                         {
-                            shape = "Треугольная";
+                            Submenu.shape.stringValue = "Треугольная";
                         }
 
                         else if (position == 6)
                         {
                             Console.Write("Форма торта: ");
-                            shape = Console.ReadLine();
+                            Submenu.shape.stringValue = Console.ReadLine();
                         }
 
                         Console.Clear();
@@ -318,7 +230,7 @@ namespace ConsoleApp2
             {
                 position = 3;
 
-                Console.WriteLine("->1 кг (5 порций)\n  3 кг (15 порций)\n  6 кг (30 порций)\n  9 кг (45 порций)\n  12 кг (60 порций)\n  15 кг (75 порций)\n  18 кг (90 порций)");
+                Console.WriteLine(Submenu.productWeight.submenuInput);
 
                 do
                 {
@@ -333,12 +245,12 @@ namespace ConsoleApp2
                     {
                         if (position - 2 == 1)
                         {
-                            productWeight = 1;
+                            Submenu.productWeight.intValue = 1;
                         }
 
                         else
                         {
-                            productWeight = (position - 3) * 3;
+                            Submenu.productWeight.intValue = (position - 3) * 3;
                         }
 
                         Console.Clear();
@@ -360,7 +272,7 @@ namespace ConsoleApp2
             {
                 position = 3;
 
-                Console.WriteLine("->Ягодное\n  Мастичное\n  Кремовое");
+                Console.WriteLine(Submenu.cakeDecoration.submenuInput);
 
                 do
                 {
@@ -375,17 +287,17 @@ namespace ConsoleApp2
                     {
                         if (position == 3)
                         {
-                            cakeDecoration = "Ягодное";
+                            Submenu.cakeDecoration.stringValue = "Ягодное";
                         }
 
                         else if (position == 4)
                         {
-                            cakeDecoration = "Мастичное";
+                            Submenu.cakeDecoration.stringValue = "Мастичное";
                         }
 
                         else if (position == 5)
                         {
-                            cakeDecoration = "Кремовое";
+                            Submenu.cakeDecoration.stringValue = "Кремовое";
                         }
 
                         Console.Clear();
@@ -405,13 +317,10 @@ namespace ConsoleApp2
 
             else if (position == 8)
             {
-                position = 3;
-
-                Console.WriteLine("Что написать на торте?");
+                Console.WriteLine(Submenu.additionalInscription.submenuInput);
                 Console.CursorVisible = true;
 
-                Console.Write("Надпись на торте: ");
-                additionalInscription = Console.ReadLine();
+                Submenu.additionalInscription.stringValue = Console.ReadLine();
 
                 Console.Clear();
                 Program.menuCheck = 0;
@@ -423,7 +332,7 @@ namespace ConsoleApp2
             {
                 position = 3;
 
-                Console.WriteLine("->Шоколадная табличка\n  Набор фейерверков\n  Свечи\n  Фигурки");
+                Console.WriteLine(Submenu.additionalDecorations.submenuInput);
 
                 do
                 {
@@ -438,16 +347,16 @@ namespace ConsoleApp2
                     {
                         if (position == 3)
                         {
-                            if (additionalDecorations[0] == true)
+                            if (Submenu.additionalDecorations.boolValue[0] == true)
                             {
-                                additionalDecorations[0] = false;
+                                Submenu.additionalDecorations.boolValue[0] = false;
                                 Console.SetCursorPosition(22, 3);
                                 Console.WriteLine("         ");
                             }
 
                             else
                             {
-                                additionalDecorations[0] = true;
+                                Submenu.additionalDecorations.boolValue[0] = true;
                                 Console.SetCursorPosition(22, 3);
                                 Console.WriteLine("- выбрано");
                             }
@@ -455,16 +364,16 @@ namespace ConsoleApp2
 
                         else if (position == 4)
                         {
-                            if (additionalDecorations[1] == true)
+                            if (Submenu.additionalDecorations.boolValue[1] == true)
                             {
-                                additionalDecorations[1] = false;
+                                Submenu.additionalDecorations.boolValue[1] = false;
                                 Console.SetCursorPosition(20, 4);
                                 Console.WriteLine("         ");
                             }
 
                             else
                             {
-                                additionalDecorations[1] = true;
+                                Submenu.additionalDecorations.boolValue[1] = true;
                                 Console.SetCursorPosition(20, 4);
                                 Console.WriteLine("- выбрано");
                             }
@@ -472,16 +381,16 @@ namespace ConsoleApp2
 
                         else if (position == 5)
                         {
-                            if (additionalDecorations[2] == true)
+                            if (Submenu.additionalDecorations.boolValue[2] == true)
                             {
-                                additionalDecorations[2] = false;
+                                Submenu.additionalDecorations.boolValue[2] = false;
                                 Console.SetCursorPosition(8, 5);
                                 Console.WriteLine("         ");
                             }
 
                             else
                             {
-                                additionalDecorations[2] = true;
+                                Submenu.additionalDecorations.boolValue[2] = true;
                                 Console.SetCursorPosition(8, 5);
                                 Console.WriteLine("- выбрано");
                             }
@@ -489,16 +398,16 @@ namespace ConsoleApp2
 
                         else if (position == 6)
                         {
-                            if (additionalDecorations[3] == true)
+                            if (Submenu.additionalDecorations.boolValue[3] == true)
                             {
-                                additionalDecorations[3] = false;
+                                Submenu.additionalDecorations.boolValue[3] = false;
                                 Console.SetCursorPosition(10, 6);
                                 Console.WriteLine("         ");
                             }
 
                             else
                             {
-                                additionalDecorations[3] = true;
+                                Submenu.additionalDecorations.boolValue[3] = true;
                                 Console.SetCursorPosition(10, 6);
                                 Console.WriteLine("- выбрано");
                             }
@@ -518,7 +427,6 @@ namespace ConsoleApp2
             // конец заказа
             else if (position == 10)
             {
-                position = 3;
                 Console.WriteLine("Заказ оформлен! Спасибо за покупку торта \"У Полифема\", обращайтесь ещё!");
 
                 Saving();
@@ -530,17 +438,10 @@ namespace ConsoleApp2
                     if (key.Key == ConsoleKey.Escape)
                     {
                         // обнуление
-                        numberOfTiers = 0; productWeight = 0; numberOfTiersPrice = 0; shapePrice = 0; cakeDecorationPrice = 0; additionalInscriptionPrice = 0; additionalDecorationsPrice = 0;
-                        filling = null; shape = null; cakeDecoration = null; additionalInscription = null;
-
-                        for (int i = 0; i < additionalDecorations.LongLength; i++)
-                        {
-                            additionalDecorations[i] = false;
-                        }
-
                         price = 0;
-                        yourCake = null;
+                        yourCake = "";
 
+                        Submenu.ZeroingOut();
                         Console.Clear();
                         Program.menuCheck = 0;
                         break;

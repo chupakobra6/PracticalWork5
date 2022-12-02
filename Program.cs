@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ConsoleApp2
+﻿namespace ConsoleApp2
 {
     internal class Program
     {
@@ -18,7 +16,7 @@ namespace ConsoleApp2
                 if (menuCheck == 0)
                 {
                     Console.SetCursorPosition(0, 0);
-                    Console.WriteLine($"Заказ тортов \"У Полифема\", любые виды тортов на ваш выбор!\nВыберете параметр торта\n-----------------------\n  Количество ярусов\n  Начинка\n  Форма\n  Вес изделия\n  Оформление торта\n  Дополнительная надпись  \n  Дополнительные украшения\n  Конец заказа\n\nЦена: {Order.price}\nВаш торт: {Order.yourCake}");
+                    Console.WriteLine($"Заказ тортов \"У Полифема\", любые виды тортов на ваш выбор!\nВыберете параметры торта\n------------------------\n{Submenu.numberOfTiers.name}\n{Submenu.filling.name}\n{Submenu.shape.name}\n{Submenu.productWeight.name}\n{Submenu.cakeDecoration.name}\n{Submenu.additionalInscription.name}\n{Submenu.additionalDecorations.name}\n  Конец заказа\n\nЦена: {Order.price}\nВаш торт: {Order.yourCake}");
                     menuCheck = 1;
                 }
 
